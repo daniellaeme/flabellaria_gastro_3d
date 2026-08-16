@@ -13,6 +13,71 @@ This repository entails a fully automated high-throughput virtual screening pipe
 4. Complex Generation (```generate_complex.py```): Parses the Vina multi-model output, extracts the global thermodynamic minimum, standardizes the PDB column syntax, and merges the ligand into the receptor for immediate visualization.
 5. ADMET & Drug-Likeness (```calculate_drug_likeness.py```): Integrates a custom remote utils.py script from the My-Chem-Bioinformatics-Toolkit to programmatically calculate Lipinski's Rule of 5 violations and molecular descriptors via RDKit and Pandas.
 
+## Repository Structure
+<details>
+<summary>Click to expand the project tree structure</summary>
+
+```bash
+📁 cox2-3d/
+    ├── 📄 .gitignore
+    ├── 📄 README.md
+    ├── 📁 adme_t_drug_likeness/
+    │   ├── 📄 compound_drug_likeness.csv
+    │   ├── 📄 swissadme.csv
+    │   └── 📄 toxicity.xlsx
+    ├── 📁 data/
+    │   └── 📁 raw/
+    │       ├── 📄 6COX.pdb
+    │       └── 📄 compound_library.xlsx
+    ├── 📄 main.py
+    ├── 📁 results/
+    │   ├── 📄 master_docking_scores.csv
+    │   └── 📁 plip/
+    │       ├── 🖼️ APIGENIN_7_GLUCOSIDE_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ BETA_SITOSTEROL_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ B_SITOSTEROL_B_D_GLUCOSIDE_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ CAFFEIC_ACID_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ CELECOXIB_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ FERULIC_ACID_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ FRIEDELINOL_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ FRIEDELIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ INDOMETHACIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ KAEMPFEROL_3_O_RUTINOSIDE_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ KAEMPFEROL_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ P_COUMARIC_ACID_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ QUERCETIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ RUTIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 🖼️ SC_558_6COX_COMPLEX_PROTEIN_UNL_A_1.png
+    │       ├── 📄 apigenin_7_glucoside_6cox_complex_results.txt
+    │       ├── 📄 b_sitosterol_b_d_glucoside_6cox_complex_results.txt
+    │       ├── 📄 beta_sitosterol_6cox_complex_results.txt
+    │       ├── 📄 caffeic acid_6cox_complex_results.txt
+    │       ├── 📄 celecoxib_6cox_complex_results.txt
+    │       ├── 📄 ferulic_acid_6cox_complex_results.txt
+    │       ├── 📄 friedelin_6cox_complex_results.txt
+    │       ├── 📄 friedelinol_6cox_complex_results.txt
+    │       ├── 📄 indomethacin_6cox_complex_results.txt
+    │       ├── 📄 kaempferol_3_o_rutinoside_6cox_complex_results.txt
+    │       ├── 📄 kaempferol_6cox_complex_results.txt
+    │       ├── 📄 p_coumaric acid_6cox_complex_results.txt
+    │       ├── 📄 plip_results_compiled.docx
+    │       ├── 📄 quercetin_6cox_complex_results.txt
+    │       ├── 📄 rutin_6cox_complex_results.txt
+    │       └── 📄 sc_558_6cox_complex_results.txt
+    ├── 📄 run_pipeline.ipynb
+    ├── 📁 scripts/
+    │   ├── 📄 docking.py
+    │   ├── 📄 drug_likeness.py
+    │   ├── 📄 generate_complex.py
+    │   ├── 📄 ligand_prep.py
+    │   ├── 📄 receptor_prep.py
+    │   └── 📄 utils.py
+    └── 📄 vina.exe
+
+
+```
+</details>
+
 ## Results
 | Compound                   | Affinity_kcal_mol |
 |----------------------------|-------------------|
