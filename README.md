@@ -100,10 +100,12 @@ This repository entails a fully automated high-throughput virtual screening pipe
 ![FRIEDELIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png](results/plip/FRIEDELIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png)
 _Figure: The Friedelin-6COX Complex_
 
+## Key Findings
 The pipeline successfully demonstrated profound Structure-Activity Relationships (SAR) and Pharmacokinetic viability:
-- Top Hit: The triterpenoid Friedelin (-8.44 kcal/mol) perfectly matched the hydrophobic COX-2 channel, outperforming commercial NSAIDs.
-- Deep Pocket Validation: PLIP analysis confirmed that plant compounds like Quercetin bypassed the entrance lobby to form direct hydrogen bonds with Ser530 and Tyr385 (the deep catalytic floor), matching the exact mechanism of clinical drugs.
-- Drug-Likeness: Automated profiling confirmed that the flavonoid aglycones possess zero Lipinski violations, predicting excellent oral bioavailability, while toxicity screening confirmed the absence of hepatotoxic and mutagenic risks.
+- **Assay Validation**: The dynamic active-site clearance successfully produced pharmaceutical-grade affinities for clinical controls (Celecoxib: -11.35 kcal/mol), proving absolute pipeline calibration.
+- **Top Plant Hits**: The triterpenoid **Friedelin (-8.48 kcal/mol)** and flavonoid **Apigenin-7-glucoside (-8.16 kcal/mol)** perfectly matched the COX-2 channel, outperforming standard NSAIDs.
+- **Deep Pocket Validation**: PLIP analysis confirmed that plant compounds like **Quercetin** bypassed the entrance to form direct hydrogen bonds with **Ser530** and **Tyr385** (the deep catalytic floor), matching the exact mechanism of clinical drugs.
+- **Drug-Likeness**: Automated profiling confirmed that the flavonoid aglycones possess zero Lipinski violations, predicting excellent oral bioavailability, while toxicity screening confirmed the absence of hepatotoxic and mutagenic risks.
 
 ## Installation & Usage
 1. Create a virtual environment and Install requirements especially:
@@ -116,12 +118,9 @@ pip install rdkit meeko vina biopython gemmi openbabel-wheel pandas
 ```
 python main. py
 ```
-or run the jupyter notebook
+or run the jupyter notebook ```run_pipeline.ipynb```
 5. Run the drug-likeness post-docking script
 ```
 python scripts/drug_likeness.py
 ```
 Processed ```.pdbqt``` files, docked complexes, and ```.csv``` ADMET profiles will auto-populate in the ```./results/``` and ```./adme_t_drug_likeness``` directories.
-
-
-
