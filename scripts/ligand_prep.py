@@ -62,7 +62,7 @@ def prep_ligand(smiles, output_path=os.path.join('.', 'data', 'processed', 'liga
 
             # Calculate RMSD
             for cid_ref in unique_confs:
-                rmsd = AllChem.GetBestRMS(mol_h, mol_h, cid_test, cid_ref)  # Accounts for chemical symmetries, understands compounds existing with the same spatial shape and prevents incorrect calculations.
+                rmsd = AllChem.GetConformerRMS(mol_h, cid_test, cid_ref)  # Fast, direct atomic comparison?
                 if rmsd < 1.0:                                              # If the calculated RMSD to all accepted reference conformers is greater than the threshold (1.0 Angstrom), the conformer is structurally unique.
                     is_unique = False
                     break

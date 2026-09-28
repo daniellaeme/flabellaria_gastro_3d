@@ -1,0 +1,5 @@
+﻿Target_Name,PDB_ID,Native_Ligand,Cofactor
+PROTON_PUMP,5YLU.pdb,HKT,None
+UREASE,1E9Y.pdb,HAE,NI
+COX_1,1EQG.pdb,IBP,HEM
+COX_2,6COX.pdb,S58,HEM

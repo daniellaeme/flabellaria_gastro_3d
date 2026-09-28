@@ -32,20 +32,20 @@ def count_lipinski_violations(row):
     return violations
 
 
-xlsx_input = '../data/raw/compound_library.xlsx'
-if not os.path.exists(xlsx_input):
-    print(f'Error: file {xlsx_input} does not exist')
+csv_input = '../data/raw/compounds.csv'
+if not os.path.exists(csv_input):
+    print(f'Error: file {csv_input} does not exist')
     sys.exit()
 
-df = pd.read_excel(xlsx_input)
+df = pd.read_csv(csv_input)
 
 print("Calculating descriptors...")
-descriptors_df = df['canonical_smiles'].apply(smiles_to_descriptors).apply(pd.Series)
+descriptors_df = df['SMILES'].apply(smiles_to_descriptors).apply(pd.Series)
 dl_df = pd.concat([df, descriptors_df], axis=1)
 dl_df['Lipinski_Violations'] = dl_df.apply(count_lipinski_violations, axis=1)
 
 print("\nResults:")
-print(dl_df[['canonical_smiles', 'MW', 'LogP', 'HBD', 'HBA', 'Lipinski_Violations']].head())
+print(dl_df[['SMILES', 'MW', 'LogP', 'HBD', 'HBA', 'Lipinski_Violations']].head())
 
 os.makedirs('../adme_t_drug_likeness', exist_ok=True)
 output_path = '../adme_t_drug_likeness/compound_drug_likeness.csv'

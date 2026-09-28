@@ -3,7 +3,7 @@ import numpy as np
 from Bio.PDB import PDBParser, PDBIO, Select
 
 
-def prep_receptor(protein_name: str, file_path: str, target_ligand_name: str, output_path=os.path.join('.', 'data', 'processed', 'receptor_prep', 'receptor_clean.pdb')):
+def prep_receptor(protein_name: str, file_path: str, target_ligand_name: str, cofactor_name: str,output_path=os.path.join('.', 'data', 'processed', 'receptor_prep', 'receptor_clean.pdb')):
     '''
     Parses, cleans, isolates, and prepares receptor structures.
     Preserves cofactors and outputs directly to receptor_prep subdirectory.
@@ -118,22 +118,46 @@ def prep_receptor(protein_name: str, file_path: str, target_ligand_name: str, ou
         dehydrates the pocket, and purges non-functional crystallization ligands.
         """
 
-        def __init__(self, host, partner, keep_cofactor=True, cofactor_name='HEM'):
+        def __init__(self, host, partner, target_ligand, keep_cofactor=True, cofactor_name='None'):
             self.host = host
             self.partner = partner
+            self.target_ligand = target_ligand
             self.keep_cofactor = keep_cofactor
             self.cofactor_name = cofactor_name
 
         def accept_chain(self, chain):                  # If monomeric, keep only the host chain. Otherwise, keep the host-partner dimer.
             return chain.id in [self.host, self.partner]        # Reject Chain C to keep only the functional interfacial dimer (A & B)
 
+        # Blacklisting Method
+        # def accept_residue(self, residue):
+        #     res_name = residue.get_resname().strip()  # strip? # Read residue name
+        #     if res_name in ['HOH', 'NAG', self.target_ligand]:
+        #         return False  # Discard water molecules, crystallization lipids, and detergents
+        #     if self.cofactor_name != 'None' and res_name == self.cofactor_name:
+        #         return self.keep_cofactor  # Retain or remove cofactor only if the protein actually uses one
+        #     return True  # Accept standard protein residues (amino acids)
+
+        # Whitelisitng Method
         def accept_residue(self, residue):
-            res_name = residue.get_resname()  # Read residue name
-            if res_name in ['HOH', 'S58', 'NAG']:
-                return False  # Discard water molecules, crystallization lipids, and detergents
-            if res_name == self.cofactor_name:
-                return self.keep_cofactor  # Retain or remove cofactor depending on target modeling hypothesis
-            return True  # Accept standard protein residues (amino acids)
+            res_name = residue.get_resname().strip()
+
+            # Always keep the assigned cofactor
+            if self.cofactor_name != 'None' and res_name == self.cofactor_name:
+                return self.keep_cofactor
+
+            # Whitelist standard amino acids
+            # We explicitly add 'KCX' because Urease requires this modified Lysine to function
+            standard_amino_acids = [
+                'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE',
+                'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR', 'VAL',
+                'KCX'
+            ]
+
+            # Only accept atoms on the whitelist. Automatically delete everything else.
+            if res_name in standard_amino_acids:
+                return True
+
+            return False
 
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -142,9 +166,11 @@ def prep_receptor(protein_name: str, file_path: str, target_ligand_name: str, ou
     io.set_structure(structure)
     # The 'keep_cofactor=True' default maintains the cofactor-bound state.
     # Set to 'False' if modeling an apo-state docking hypothesis.
-    cofactor_name = 'HEM'
+    # Set to keep_cof if our CSV says 'None' for cofactor, tell the filter not to look for one
+    keep_cof = False if cofactor_name == 'None' else True
+
     io.save(output_path,
-            select=CustomFilter(host=host_chain_id, partner=partner_chain_id, keep_cofactor=True, cofactor_name=cofactor_name)
+            select=CustomFilter(host=host_chain_id, partner=partner_chain_id, target_ligand=target_ligand_name, keep_cofactor=keep_cof, cofactor_name=cofactor_name)
     )  # Pass custom filter to the select parameter
     print(f'\n[5/5]')
     if partner_chain_id:
