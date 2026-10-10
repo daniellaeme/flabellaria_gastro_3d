@@ -1,126 +1,102 @@
-# In Silico 3D Pharmacological Mapping of the Bioactives of _Danielli oliveri_ and Flabellaria paniculata against the COX-2 inhibitor.
 
-## Biological Context
-Inflammation is driven by the Cyclooxygenase-2 (COX-2) enzyme, making it a primary target for non-steroidal anti-inflammatory drugs (NSAIDs). However, synthetic COX-2 inhibitors often carry severe cardiovascular or gastrointestinal side effects.
+<img width="1827" height="921" alt="flabellaria_network csv" src="https://github.com/user-attachments/assets/db97355d-e604-4e55-a36b-a8857e1c92d4" />
 
-This project computationally validates the indigenous traditional medicine of West Africa by screening phytochemical fractions from _Daniellia oliveri_ and _Flabellaria paniculata_ against the COX-2 target (PDB: 6COX), followed by rigorous pharmacokinetic profiling.
+# The Polypharmacology of Flabellaria paniculata (Cav.)
 
-## Methodology/Architecture
-This repository entails a fully automated high-throughput virtual screening pipeline:
-1. Receptor Preparation (```receptor_prep.py```): Uses BioPython to dynamically parse the PDB hierarchy. It calculates the exact 3D docking centroid based on the native ligand, purges crystallization artifacts (like NAG sugars and S58), and explicitly preserves the crucial HEM cofactor.
-2. Ligand Preparation (```ligand_prep.py```): Uses RDKit to convert SMILES to 3D. Employs ETKDGv3 embedding (N=50), MMFF94 force field minimization, and thermodynamic RMSD pruning to ensure only the most stable chemical conformations are docked.
-3. Docking Simulation Execution (```docking.py```): Utilizes Meeko for torsional tree mapping and OpenBabel for physiological pH 7.4 protonation. Runs the compiled AutoDock Vina C++ binary asynchronously.
-4. Complex Generation (```generate_complex.py```): Parses the Vina multi-model output, extracts the global thermodynamic minimum, standardizes the PDB column syntax, and merges the ligand into the receptor for immediate visualization.
-5. ADMET & Drug-Likeness (```calculate_drug_likeness.py```): Integrates a custom remote utils.py script from the My-Chem-Bioinformatics-Toolkit to programmatically calculate Lipinski's Rule of 5 violations and molecular descriptors via RDKit and Pandas.
+Computational Validation of Traditional Gastroprotective & Anti-Inflammatory Synergy
 
-## Repository Structure
-<details>
-<summary>Click to expand the project tree structure</summary>
+Authors: Daniella E. Ene-Obong & Margaret O. Sofidiya
 
-```bash
-📁 cox2-3d/
-    ├── 📄 .gitignore
-    ├── 📄 README.md
-    ├── 📁 adme_t_drug_likeness/
-    │   ├── 📄 compound_drug_likeness.csv
-    │   ├── 📄 swissadme.csv
-    │   └── 📄 toxicity.xlsx
-    ├── 📁 data/
-    │   └── 📁 raw/
-    │       ├── 📄 6COX.pdb
-    │       └── 📄 compound_library.xlsx
-    ├── 📄 main.py
-    ├── 📁 results/
-    │   ├── 📄 master_docking_scores.csv
-    │   └── 📁 plip/
-    │       ├── 🖼️ APIGENIN_7_GLUCOSIDE_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ BETA_SITOSTEROL_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ B_SITOSTEROL_B_D_GLUCOSIDE_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ CAFFEIC_ACID_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ CELECOXIB_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ FERULIC_ACID_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ FRIEDELINOL_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ FRIEDELIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ INDOMETHACIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ KAEMPFEROL_3_O_RUTINOSIDE_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ KAEMPFEROL_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ P_COUMARIC_ACID_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ QUERCETIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ RUTIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 🖼️ SC_558_6COX_COMPLEX_PROTEIN_UNL_A_1.png
-    │       ├── 📄 apigenin_7_glucoside_6cox_complex_results.txt
-    │       ├── 📄 b_sitosterol_b_d_glucoside_6cox_complex_results.txt
-    │       ├── 📄 beta_sitosterol_6cox_complex_results.txt
-    │       ├── 📄 caffeic acid_6cox_complex_results.txt
-    │       ├── 📄 celecoxib_6cox_complex_results.txt
-    │       ├── 📄 ferulic_acid_6cox_complex_results.txt
-    │       ├── 📄 friedelin_6cox_complex_results.txt
-    │       ├── 📄 friedelinol_6cox_complex_results.txt
-    │       ├── 📄 indomethacin_6cox_complex_results.txt
-    │       ├── 📄 kaempferol_3_o_rutinoside_6cox_complex_results.txt
-    │       ├── 📄 kaempferol_6cox_complex_results.txt
-    │       ├── 📄 p_coumaric acid_6cox_complex_results.txt
-    │       ├── 📄 plip_results_compiled.docx
-    │       ├── 📄 quercetin_6cox_complex_results.txt
-    │       ├── 📄 rutin_6cox_complex_results.txt
-    │       └── 📄 sc_558_6cox_complex_results.txt
-    ├── 📄 run_pipeline.ipynb
-    ├── 📁 scripts/
-    │   ├── 📄 docking.py
-    │   ├── 📄 drug_likeness.py
-    │   ├── 📄 generate_complex.py
-    │   ├── 📄 ligand_prep.py
-    │   ├── 📄 receptor_prep.py
-    │   └── 📄 utils.py
-    └── 📄 vina.exe
+Institution: Department of Pharmacognosy, Faculty of Pharmacy, University of Lagos, Akoka, Nigeria.
 
+To be presented at: 19th UNILAG Annual Research Conference
 
-```
-</details>
+# Project Overview
 
-## Results
-| Compound                   | Affinity_kcal_mol |
-|----------------------------|-------------------|
-| Celecoxib                  | -11.35            |
-| SC-558                     | -11.33            |
-| Indomethacin               | -8.857            |
-| Friedelin                  | -8.268            |
-| Quercetin                  | -8.041            |
-| Kaempferol                 | -7.866            |
-| Apigenin-7-glucoside       | -7.81             |
-| Ferulic acid               | -6.973            |
-| Caffeic acid               | -6.817            |
-| p-Coumaric acid            | -6.566            |
-| Friedelinol                | -6.413            |
-| Beta-Sitosterol            | -6.333            |
-| Rutin                      | -4.29             |
-| Kaempferol-3-O-rutinoside  | -3.41             |
-| b-Sitosterol b-D-glucoside | 0.4772            |
+African traditional medicine frequently relies on complex, multi-component aqueous decoctions to manage chronic conditions like gastric ulcers. The mechanistic validation of these polyherbal remedies remains a significant challenge. Flabellaria paniculata is extensively utilized in Nigerian traditional medicine to treat inflammatory and gastrointestinal disorders.
 
-![FRIEDELIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png](results/plip/FRIEDELIN_6COX_COMPLEX_PROTEIN_UNL_A_1.png)
-_Figure: The Friedelin-6COX Complex_
+The Problem: Traditional synthetic NSAIDs efficiently inhibit COX-2 to treat inflammation, but indiscriminately block COX-1, destroying mucosal defenses and causing severe gastric ulcers. Furthermore, these ulcers are exacerbated by overactive Gastric Proton Pumps and the mucosal-damaging ammonia cloud produced by H. pylori Urease.
 
-## Key Findings
-The pipeline successfully demonstrated profound Structure-Activity Relationships (SAR) and Pharmacokinetic viability:
-- **Assay Validation**: The dynamic active-site clearance successfully produced pharmaceutical-grade affinities for clinical controls (Celecoxib: -11.35 kcal/mol), proving absolute pipeline calibration.
-- **Top Plant Hits**: The triterpenoid **Friedelin (-8.48 kcal/mol)** and flavonoid **Apigenin-7-glucoside (-8.16 kcal/mol)** perfectly matched the COX-2 channel, outperforming standard NSAIDs.
-- **Deep Pocket Validation**: PLIP analysis confirmed that plant compounds like **Quercetin** bypassed the entrance to form direct hydrogen bonds with **Ser530** and **Tyr385** (the deep catalytic floor), matching the exact mechanism of clinical drugs.
-- **Drug-Likeness**: Automated profiling confirmed that the flavonoid aglycones possess zero Lipinski violations, predicting excellent oral bioavailability, while toxicity screening confirmed the absence of hepatotoxic and mutagenic risks.
+**Objective**: This project bridges indigenous knowledge with rational drug design by deploying an automated in silico pipeline (Network Pharmacology, Molecular Docking, and ADMET profiling) to elucidate the multi-targeted synergy of this indigenous remedy.
 
-## Installation & Usage
-1. Create a virtual environment and Install requirements especially:
-```
-pip install rdkit meeko vina biopython gemmi openbabel-wheel pandas
-```
-2. Ensure the AutoDock Vina executable (vina.exe or vina binary) is in your system path or project root.
-3. Place your target PDB file in ./data/raw/ and populate compound_library.csv
-4. Run the main py file
-```
-python main. py
-```
-or run the jupyter notebook ```run_pipeline.ipynb```
-5. Run the drug-likeness post-docking script
-```
-python scripts/drug_likeness.py
-```
-Processed ```.pdbqt``` files, docked complexes, and ```.csv``` ADMET profiles will auto-populate in the ```./results/``` and ```./adme_t_drug_likeness``` directories.
+# Computational Pipeline & Methodology
+
+1. Phytochemical Curation: Phytochemicals identified via existing literature and spectral data were curated, and 3D structures were geometrically optimized (PubChem/PDB).
+
+2. Network Pharmacology: Putative targets were predicted (SwissTargetPrediction) and mapped topologically (Cytoscape v3.9) to uncover the shared genetic axis between systemic inflammation and gastric ulcers.
+
+3. High-Throughput Molecular Docking: 52 rigorous thermodynamic binding simulations were executed via AutoDock Vina against critical targets (COX-1, COX-2, Urease, and Proton Pump).
+
+4. Structural Validation & ADMET: Atom-to-atom noncovalent interactions were mathematically extracted using PLIP and visualized via Mol*/PyMOL. In vivo safety and absorption parameters were confirmed via predictive toxicology (ProTox-II/SwissADME).
+
+# Results
+
+| Compound                        | PROTON_PUMP | UREASE | COX_1  | COX_2  |
+|---------------------------------|-------------|--------|--------|--------|
+| Friedelin                       | -7.515      | -7.099 | 5.98   | -8.363 |
+| Friedelinol                     | -4.384      | -7.125 | 8.696  | -5.241 |
+| Beta-Sitosterol                 | -9.618      | -6.571 | -6.079 | -6.907 |
+| b-Sitosterol b-D-glucoside      | -8.799      | -6.399 | -6.153 | -7.003 |
+| Kaempferol-3-O-rutinoside       | -9.101      | -7.907 | -4.788 | -4.193 |
+| Vonoprazan (HKT) - NL           | -9.165      | -6.537 | -6.488 | -7.697 |
+| Omeprazole - SD                 | -8.29       | -6.852 | -7.45  | -6.965 |
+| Acetohydroxamic acid (HAE) - NL | -4.143      | -4.273 | -3.76  | -3.729 |
+| Thiourea                        | -3.244      | -3.478 | -3.157 | -3.151 |
+| Ibuprofen (IBF) - NL            | -7.35       | -6.346 | -7.435 | -7.223 |
+| Indomethacin - SD               | -9.076      | -7.085 | -7.172 | -8.898 |
+| SC-558 (S58) - NL               | -10.09      | -7.627 | -6.211 | -11.34 |
+| Celecoxib - SD                  | -10.67      | -7.71  | -6.429 | -11.36 |
+
+<img width="1480" height="550" alt="b_sitosterol_b_d_glucoside_proton_pump_complex_labelled_pymol_image" src="https://github.com/user-attachments/assets/4eeaadb9-6459-4b5a-a37f-7d23567bf741" />
+
+<img width="1480" height="550" alt="beta_sitosterol_proton_pump_complex_labelled_pymol_image" src="https://github.com/user-attachments/assets/30cdf01f-9b7a-497f-98c0-f1877aa05944" />
+
+<img width="1480" height="550" alt="friedelin_COX_2_complex_labelled_pymol_image" src="https://github.com/user-attachments/assets/810dec12-6485-48ba-96ec-90ed5e309c72" />
+
+<img width="1480" height="550" alt="kaempferol_3_o_rutinoside_urease_complex_labelled_pymol_image" src="https://github.com/user-attachments/assets/90df8aa0-0669-4748-a7d0-74f70fba93dc" />
+
+# Key Findings
+
+1. Network Pharmacology (The Shared Genetic Axis)
+
+Topological mapping confirmed the plant's traditional polypharmacology is rooted in a shared genetic axis. Targets including PTGS2, TNF, and IL1B bridge both systemic inflammation and gastric ulcers.
+
+Friedelin anchors the anti-inflammatory arm by inhibiting PTGS2.
+
+Beta-sitosterol and Kaempferol-3-O-rutinoside directly modulate the ulcerogenic microenvironment by targeting the gastric proton pump (ATP4A) and H. pylori survival (Urease).
+
+2. Resolving the NSAID Paradox (Molecular Docking)
+
+The 3D binding thermodynamics computationally resolve the classic NSAID paradox:
+
+Friedelin (COX-2 Selective): The massive triterpenoid scaffold exhibits deep pocket insertion into COX-2 (-8.36 kcal/mol) via hydrophobic enclosure (Val349, Leu352). Structural analysis predicts severe steric clashes with the narrower COX-1 pocket, explaining the decoction's ability to halt inflammation without triggering mucosal toxicity.
+
+Beta-sitosterol (Proton Pump): Exhibits superior mechanical inhibition (-9.62 kcal/mol) of the pump mechanism via robust hydrophobic interactions (Cys813, Tyr799), outperforming Omeprazole's initial non-covalent affinity phase.
+
+Kaempferol-3-O-rutinoside (Urease): Neutralizes the bacterial active site (-7.91 kcal/mol) via strong H-bonds and a critical salt bridge (His322), preventing mucosal-damaging ammonia cloud generation.
+
+3. Formulation Dynamics (The Nanoparticle Hypothesis)
+
+ADMET profiling reveals that the highly lipophilic aglycones (like Friedelin) are likely solubilized in the traditional aqueous decoction via amphiphilic glycosides acting as natural biosurfactants. Exhibiting poor GI absorption (Tox Class IV), these bulky glycosides function computationally as microbiome-cleavable prodrugs. They survive upper GI transit to deliver active, binding-competent aglycones directly to inflamed lower intestinal lesions.
+
+# Repository Structure
+
+/data: Contains raw interaction CSVs, target lists, and SMILES strings.
+
+/scripts: Python scripts utilized for ligand/receptor preparation and Vina automation.
+
+/results: Contains the final 52 docking logs, PLIP interaction tables, and SwissTargetPrediction outputs.
+
+/poster: High-resolution digital copies of the A0 Conference Poster (PDF/PNG).
+
+# Contact & Future Work
+
+Future Directions: To transition these static docking poses into dynamic physiological models, 100ns Molecular Dynamics (MDS) simulations (GROMACS) coupled with MM-PBSA free energy calculations are planned to validate complex stability in solvated environments.
+
+Contact the Authors:
+
+Daniella E. Ene-Obong: https://www.linkedin.com/in/daniella-ene-obong/
+
+Margaret O. Sofidiya
+
+Acknowledgments: The authors acknowledge the University of Lagos for providing the academic and computational platform for this research.
